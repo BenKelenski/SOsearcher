@@ -24,27 +24,36 @@ def getQuestions(questionStr):
             print('************************************************')
             for question in questions[0:5]:
                 # Get title of question
-                title = question.find(class_="question-hyperlink").get_text().strip()
-                
-                # Find votes div
-                votes = question.find(class_="votes")
                 try:
+                    title = question.find(class_="question-hyperlink").get_text().strip()
+                except AttributeError:
+                    title = "No title found"
+                
+                try:
+                    # Find votes div
+                    votes = question.find(class_="votes")
                     # Get vote text. If no text 'No' is assigned
                     votes = votes.find('strong').get_text()
                 except AttributeError:
                     votes = "No"
 
-                # Find answer divs        
-                answers = question.find(class_="answered-accepted")
                 try:
+                    # Find answer divs        
+                    answers = question.find(class_="answered-accepted")
                     # Gets answer text. If no text 'No' is assigned
                     answers = answers.find('strong').get_text()
                 except AttributeError:
                     answers = "No"
-
+                
+                try:
+                    date = question.find(class_="started").get_text()
+                    date.strip()
+                except AttributeError:
+                    date = "No date given"
+                
                 # lstrip() strips away any leading whitespace
                 print(title.lstrip())
-                print("Q{}: {} vote(s) & {} answer(s) \n".format(questionCnt, votes, answers))
+                print("Q{}: {} vote(s) & {} answer(s) {}\n".format(questionCnt, votes, answers, date))
 
                 questionCnt+=1
             print('************************************************')
