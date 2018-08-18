@@ -24,7 +24,7 @@ def getQuestions(questionStr):
             print('************************************************')
             for question in questions[0:5]:
                 # Get title of question
-                title = question.find(class_="question-hyperlink").get_text().lstrip().rstrip()
+                title = question.find(class_="question-hyperlink").get_text().strip()
                 
                 # Find votes div
                 votes = question.find(class_="votes")
