@@ -11,6 +11,7 @@ def getQuestions(questionStr):
         soup = BeautifulSoup(response.text, 'html.parser')
         questions = soup.find_all(class_="question-summary")
         questionCnt = 1
+        print('************************************************')
         for question in questions[0:5]:
             # Get title of question
             title = question.find(class_="question-hyperlink").get_text().replace('\n','')
@@ -36,28 +37,39 @@ def getQuestions(questionStr):
             print("Q{}: {} vote(s) & {} answer(s) \n".format(questionCnt, votes, answers))
 
             questionCnt+=1
-        questionSelect = input("Select a answer(1-5) or 'r' to redo your search: ")
-        if questionSelect.isdigit():
-            if 1 <= int(questionSelect) < 6:
-                flag = False
-        elif questionSelect=='r':
-            continue
+        print('************************************************')
+        while(True):
+            questionSelect = input("Select a answer(1-5) or 'r' to redo your search: ")
+            if questionSelect.isdigit():
+                if 1 <= int(questionSelect) < 6:
+                    flag = False
+                    link = questions[int(questionSelect)-1]
+                    link = link.find(class_="question-hyperlink")
+                    link = link['href']
 
-    return questionSelect
+                    break
+            elif questionSelect=='r':
+                questionStr = input("Ask new question: ")
+                questionStr.replace(" ","+")
+                break
+            else:
+                print('Not an option!')
+    
+    return link
+
+
+def openAnswerPage(link):
+    webbrowser.open("https://stackoverflow.com/"+link, new=2)
+
 
 def main():
     #questionStr = input("What's your error? ")
     questionStr = "semicolon not found"
     questionStr = questionStr.replace(" ","+")
-    selectedQuestion = getQuestions(questionStr)
+    link = getQuestions(questionStr)
+    questionStr = questionStr.replace(" ","+")
+    openAnswerPage(link)
 
-    # div.answered-accepted
-    # div.votes
-    print(selectedQuestion)
-
-
-
-    """ webbrowser.open("https://stackoverflow.com/search?q="+questionStr, new=2) """
 
 if __name__ == "__main__":
     main()
