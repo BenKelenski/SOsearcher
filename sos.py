@@ -49,7 +49,7 @@ def getQuestions(questionStr):
                 questionCnt+=1
             print('************************************************')
             while(True):
-                questionSelect = input("Select answer(1-5) or 'r' to reask or 'q' to quit: ")
+                questionSelect = input("Select answer(1-5) or (r)eask or (q)uit: ")
                 if questionSelect.isdigit():
                     if 1 <= int(questionSelect) < 6:
                         flag = False
@@ -58,11 +58,11 @@ def getQuestions(questionStr):
                         link = link['href']
 
                         break
-                elif questionSelect=='r':
+                elif questionSelect.lower()=='r':
                     questionStr = input("Ask new question: ")
                     questionStr.replace(" ","+")
                     break
-                elif questionSelect=='q':
+                elif questionSelect.lower()=='q':
                     exit()
                 else:
                     print('Not an option!')
@@ -75,10 +75,13 @@ def openAnswerPage(link):
 
 
 def main():
-    questionStr = input("What's your error? ")
-    questionStr = questionStr.replace(" ","+")
-    link = getQuestions(questionStr)
-    questionStr = questionStr.replace(" ","+")
+    if len(sys.argv)>1:
+        questionStr = "+".join(sys.argv[1:])
+        link = getQuestions(questionStr)
+    else:
+        questionStr = input("What's your error? ")
+        questionStr = questionStr.replace(" ","+")
+        link = getQuestions(questionStr)
     openAnswerPage(link)
 
 
