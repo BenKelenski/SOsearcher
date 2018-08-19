@@ -6,10 +6,23 @@ import webbrowser
 from bs4 import BeautifulSoup
 
 
-def getQuestions(questionStr):
+def setSearchFlags(searchFlag):
+    if searchFlag =='-r':
+        return '&tab=relevance'
+    elif searchFlag =='-n':
+        return '&tab=newest'
+    elif searchFlag =='-a':
+        return '&tab=active'
+    elif searchFlag =='-v':
+        return '&tab=votes'
+    else:
+        print("Flag not recognized")
+        return ''
+
+def getQuestions(questionStr, searchFlag=''):
     flag = True
     while(flag):
-        response = requests.get("https://stackoverflow.com/search?q="+questionStr)
+        response = requests.get("https://stackoverflow.com/search?q="+questionStr+searchFlag)
         soup = BeautifulSoup(response.text, 'html.parser')
         questions = soup.find_all(class_="question-summary")
         if len(questions) == 0:
@@ -70,6 +83,9 @@ def getQuestions(questionStr):
                 elif questionSelect.lower()=='r':
                     questionStr = input("Ask new question: ")
                     questionStr.replace(" ","+")
+                    searchFlag = input("Set flags: ")
+                    if searchFlag:
+                        searchFlag = setSearchFlags(searchFlag)
                     break
                 elif questionSelect.lower()=='q':
                     exit()
@@ -85,12 +101,31 @@ def openAnswerPage(link):
 
 def main():
     if len(sys.argv)>1:
-        questionStr = "+".join(sys.argv[1:])
-        link = getQuestions(questionStr)
+        if len(sys.argv)>2:
+            # get question from back of the list
+            questionStr = sys.argv[-1].replace(' ','+')
+            # get flag in 1st position of lit
+            searchFlag = setSearchFlags(sys.argv[1])
+            # get link
+            link = getQuestions(questionStr,searchFlag)
+        else:
+            # get question from back of list
+            questionStr = sys.argv[-1].replace(' ','+')
+            # get link
+            link = getQuestions(questionStr)
     else:
+        # ask for question
         questionStr = input("What's your error? ")
         questionStr = questionStr.replace(" ","+")
-        link = getQuestions(questionStr)
+        # Ask for flag
+        searchFlag = input("Set a search flag '-r','-n','-v','-a': ")
+        if not searchFlag:
+            link = getQuestions(questionStr, searchFlag)
+        # get flag link
+        searchFlag = setSearchFlags(searchFlag)
+        # get link
+        link = getQuestions(questionStr, searchFlag)
+    # open question in new tab or browser
     openAnswerPage(link)
 
 
