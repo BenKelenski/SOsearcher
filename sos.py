@@ -7,17 +7,14 @@ from bs4 import BeautifulSoup
 
 
 def setSearchFlags(searchFlag):
-    if searchFlag =='-r':
-        return '&tab=relevance'
-    elif searchFlag =='-n':
-        return '&tab=newest'
-    elif searchFlag =='-a':
-        return '&tab=active'
-    elif searchFlag =='-v':
-        return '&tab=votes'
-    else:
-        print("Flag not recognized")
-        return ''
+    flagsDict = {
+        '-r':'&tab=relevance',
+        '-n':'&tab=newest',
+        '-a':'&tab=active',
+        '-v':'&tab=votes'
+    }
+    return flagsDict.get(searchFlag,'')
+
 
 def getQuestions(questionStr, searchFlag=''):
     flag = True
